@@ -14,5 +14,5 @@ import java.util.List;
 
 public interface OpenWeather {
     @GET("data/2.5/weather")
-    Call<WeatherForecast> getWeatherForecast(@Query("APPID") String appid,@Query("units") String units,@Query("q") String city);
+    Call<WeatherForecastResponse> getWeatherForecast(@Query("APPID") String appid,@Query("units") String units, @Query("params") List<String> param);
 }

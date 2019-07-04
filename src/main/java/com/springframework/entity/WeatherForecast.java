@@ -8,6 +8,9 @@ public class WeatherForecast {
     public static final String UNITS = "metric";
     public final double temp;
 
+    public double getTemp() {
+        return temp;
+    }
     public WeatherForecast(double temp) {
         this.temp = temp;
 
