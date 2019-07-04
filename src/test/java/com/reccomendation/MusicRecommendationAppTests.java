@@ -1,4 +1,4 @@
-package com.springframework;
+package com.reccomendation;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,8 +1,8 @@
-package com.springframework.controller;
+package com.recommendation;
 
-import com.springframework.entity.OpenWeather;
-import com.springframework.entity.WeatherForecast;
-import com.springframework.entity.WeatherForecastResponse;
+import com.recommendation.Service.weatherforecast.OpenWeather;
+import com.recommendation.Service.weatherforecast.WeatherForecast;
+import com.recommendation.Service.weatherforecast.WeatherForecastResponse;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.annotation.RequestMapping;

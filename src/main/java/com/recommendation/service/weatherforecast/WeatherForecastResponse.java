@@ -1,7 +1,6 @@
 
-package com.springframework.entity;
+package com.recommendation.service.weatherforecast;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
