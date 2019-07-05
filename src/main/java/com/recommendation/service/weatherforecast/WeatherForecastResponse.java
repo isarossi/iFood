@@ -8,13 +8,13 @@ public class WeatherForecastResponse {
 
     @SerializedName("main")
     @Expose
-    private Main main;
+    private MainJsonPojo main;
 
-    public Main getMain() {
+    public MainJsonPojo getMain() {
         return main;
     }
 
-    public void setMain(Main main) {
+    public void setMain(MainJsonPojo main) {
         this.main = main;
     }
 

@@ -6,8 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MusicRecommendationAppTests.class)
-public class MusicRecommendationAppTests {
+@SpringBootTest(classes = MainApplicationTests.class)
+public class MainApplicationTests {
 
     @Test
     public void contextLoads() {
