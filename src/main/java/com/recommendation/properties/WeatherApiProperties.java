@@ -1,9 +1,12 @@
 package com.recommendation.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.stereotype.Component;
 
+@Component
 @ConfigurationProperties(prefix = "weather")
-public class WeatherProperties {
+public class WeatherApiProperties {
     private String url;
     private String appid;
     private String units;
