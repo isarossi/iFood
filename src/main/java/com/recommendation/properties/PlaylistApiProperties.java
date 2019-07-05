@@ -9,27 +9,31 @@ public class PlaylistApiProperties {
     private String url;
     private String clientSecret;
     private String clientId;
-    private String responseType;
-    private String scope;
-    private String authorizationCode;
+    private String grantType;
+    protected String authorizationPrefix;
 
-    public String getUrl() {
+    public String getUrl()
+    {
         return url;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(String url)
+    {
         this.url = url;
     }
 
-    public String getClientSecret() {
+    public String getClientSecret()
+    {
         return clientSecret;
     }
 
-    public void setClientSecret(String clientSecret) {
+    public void setClientSecret(String clientSecret)
+    {
         this.clientSecret = clientSecret;
     }
 
-    public String getClientId() {
+    public String getClientId()
+    {
         return clientId;
     }
 
@@ -37,27 +41,19 @@ public class PlaylistApiProperties {
         this.clientId = clientId;
     }
 
-    public String getScope() {
-        return scope;
+    public String getGrantType() {
+        return grantType;
     }
 
-    public void setScope(String scope) {
-        this.scope = scope;
+    public void setGrantType(String grantType) {
+        this.grantType = grantType;
     }
 
-    public String getResponseType() {
-        return responseType;
+    public String getAuthorizationPrefix() {
+        return authorizationPrefix;
     }
 
-    public void setResponseType(String responseType) {
-        this.responseType = responseType;
-    }
-
-    public String getAuthorizationCode() {
-        return authorizationCode;
-    }
-
-    public void setAuthorizationCode(String authorizationCode) {
-        this.authorizationCode = authorizationCode;
+    public void setAuthorizationPrefix(String authorizationPrefix) {
+        this.authorizationPrefix = authorizationPrefix;
     }
 }
