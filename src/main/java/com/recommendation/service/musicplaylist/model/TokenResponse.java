@@ -1,4 +1,4 @@
-package com.recommendation.service.musicplaylist;
+package com.recommendation.service.musicplaylist.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

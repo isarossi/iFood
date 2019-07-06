@@ -1,5 +1,5 @@
 
-package com.recommendation.service.weatherforecast;
+package com.recommendation.service.weatherforecast.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

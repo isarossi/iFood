@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "weather")
-public class WeatherApiProperties {
+public class WeatherConfig {
     private String url;
     private String appid;
     private String units;

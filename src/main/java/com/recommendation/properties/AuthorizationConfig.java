@@ -4,8 +4,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "music")
-public class PlaylistApiProperties {
+@ConfigurationProperties(prefix = "music.authorization")
+public class AuthorizationConfig {
     protected String authorizationPrefix;
     private String url;
     private String clientSecret;
