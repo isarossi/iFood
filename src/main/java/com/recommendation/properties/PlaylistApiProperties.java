@@ -6,34 +6,29 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "music")
 public class PlaylistApiProperties {
+    protected String authorizationPrefix;
     private String url;
     private String clientSecret;
     private String clientId;
     private String grantType;
-    protected String authorizationPrefix;
 
-    public String getUrl()
-    {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(String url)
-    {
+    public void setUrl(String url) {
         this.url = url;
     }
 
-    public String getClientSecret()
-    {
+    public String getClientSecret() {
         return clientSecret;
     }
 
-    public void setClientSecret(String clientSecret)
-    {
+    public void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
-    public String getClientId()
-    {
+    public String getClientId() {
         return clientId;
     }
 
