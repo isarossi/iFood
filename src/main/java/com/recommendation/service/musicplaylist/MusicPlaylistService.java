@@ -2,34 +2,29 @@ package com.recommendation.service.musicplaylist;
 
 import com.recommendation.properties.PlaylistApiProperties;
 import com.recommendation.service.Constants;
+import com.recommendation.service.weatherforecast.WeatherForecastResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Base64;
-import java.util.List;
 
-@Service
+
 public class MusicPlaylistService{
     @Autowired
-    private PlaylistApiProperties playListApiProps;
+    private static PlaylistApiProperties playListApiProps;
 
-    private MusicPlaylistInterface service;
-
-    public MusicPlaylistService() {
+    public static MusicPlaylistServiceInterface createService() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(playListApiProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        service = retrofit.create(MusicPlaylistInterface.class);
+        return retrofit.create(MusicPlaylistServiceInterface.class);
     }
 
-    public List<String> retrieveRecommendation(Double temperature) throws IOException {
-        List<String> playlist = new ArrayList();
-        Call<TokenResponse> call = service.getAccessToken(playListApiProps.getGrantType(), retrieveAuthorizationEncoded());
+    public String retrievePlaylistByGenre(String genre) throws IOException {
+        Call<TokenResponse> call = createService().getAccessToken(playListApiProps.getGrantType(), retrieveAuthorizationEncoded());
         TokenResponse authorizationResponse = call.execute().body();
-        return playlist;
+        return "Oi";
     }
 
     private String retrieveAuthorizationEncoded() {
