@@ -37,7 +37,7 @@ public class MusicService {
         MusicPlaylistServiceInterface musicPlaylistService = retrofit.create(MusicPlaylistServiceInterface.class);
         Call<PlaylistResponse> call = musicPlaylistService.getRecommendation(genre, musicRecConfig.getLimit(), tokenResponse.getTokenType() + Constants.SPACE + tokenResponse.getAccessToken());
         Response<PlaylistResponse> playlistResponse = executeWeatherForecastService(call);
-        throw new NullPointerException();
+        return playlistResponse.body();
     }
 
     private Response<PlaylistResponse> executeWeatherForecastService(Call<PlaylistResponse> call) {
