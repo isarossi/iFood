@@ -31,17 +31,18 @@ public class MusicRecommendationController {
 
     @RequestMapping(value = "/city")
     public List<Track> recommendationByCity(String city)throws IOException{
-        List<Track> t = new ArrayList<>();
+
         WeatherService weatherService = new WeatherService(weatherConfig);
         MusicService musicService = new MusicService(authorizationConfig,musicRecConfig);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
+        PlaylistResponse playlistResponse = null;
         try {
             weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(city);
+            String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
+            playlistResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
           throw ex;
         }
-        String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
-        PlaylistResponse playlistResponse = musicService.retrievePlaylistRecommendation(genre);
         return playlistResponse.getTracks();
     }
 

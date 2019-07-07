@@ -18,35 +18,43 @@ import java.io.IOException;
 public class WeatherService {
 
     private final WeatherConfig weatherProps;
+    private static Retrofit retrofit;
+    private OpenWeatherServiceInterface openWeatherService;
 
     @Autowired
     public WeatherService(WeatherConfig weatherProps) {
         this.weatherProps = weatherProps;
+        this.retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
+        this.retrofit.create(OpenWeatherServiceInterface.class);
     }
 
-    public WeatherForecastJsonResponse retrieveWeatherResponse(String city)throws RestException{
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
+    public WeatherForecastJsonResponse retrieveWeatherResponse(String city)throws IOException{
+       // Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
+      //  OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
-        Response<WeatherForecastJsonResponse> weatherForecastService = null;
-        try {
-            weatherForecastService = call.execute();
-            if(!weatherForecastService.isSuccessful())
-            {
-                throw new RestException(weatherForecastService.message());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecasService(call);
         return weatherForecastService.body();
     }
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String lat, String lon) throws IOException {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
+      //  Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
+    //    OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
-        WeatherForecastJsonResponse weatherForecast = call.execute().body();
-        return weatherForecast;
+        Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecasService(call);
+        return weatherForecastService.body();
+    }
+
+    private Response<WeatherForecastJsonResponse> executeWeatherForecasService(Call<WeatherForecastJsonResponse> call) {
+        Response<WeatherForecastJsonResponse> weatherForecastService = null;
+        try {
+            weatherForecastService = call.execute();
+            if (!weatherForecastService.isSuccessful()) {
+                throw new RestException(weatherForecastService.errorBody().string());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return weatherForecastService;
     }
 
 }

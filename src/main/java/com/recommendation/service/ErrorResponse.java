@@ -3,19 +3,33 @@ package com.recommendation.service;
 import org.springframework.http.HttpStatus;
 
 public class ErrorResponse {
-    private HttpStatus status;
+    private String cod;
     private String message;
 
-    public ErrorResponse(HttpStatus status, String message) {
-        this.status = status;
+    public ErrorResponse(String cod, String message) {
+        this.message = message;
+        this.cod = cod;
+    }
+
+    public String getCod() {
+        return cod;
+    }
+
+    public void setCod(String cod) {
+        this.cod = cod;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
         this.message = message;
     }
 
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HttpStatus status) {
-        this.status = status;
+    @Override
+    public String toString()
+    {
+        return "ErrorResponse [status=" + cod + ", message=" + message + "]";
     }
 }

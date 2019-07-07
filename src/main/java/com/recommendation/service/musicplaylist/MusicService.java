@@ -36,8 +36,8 @@ public class MusicService {
     public PlaylistResponse retrievePlaylistRecommendation(String genre) throws IOException {
         TokenResponse tokenResponse = retrieveToken();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(musicRecConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        MusicPlaylistServiceInterface musicPlaylistService2 = retrofit.create(MusicPlaylistServiceInterface.class);
-        Call<PlaylistResponse> call = musicPlaylistService2.getRecommendation(genre, musicRecConfig.getLimit(), tokenResponse.getTokenType() + Constants.SPACE + tokenResponse.getAccessToken());
+        MusicPlaylistServiceInterface musicPlaylistService = retrofit.create(MusicPlaylistServiceInterface.class);
+        Call<PlaylistResponse> call = musicPlaylistService.getRecommendation(genre, musicRecConfig.getLimit(), tokenResponse.getTokenType() + Constants.SPACE + tokenResponse.getAccessToken());
         return call.execute().body();
     }
 
