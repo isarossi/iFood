@@ -1,10 +1,14 @@
 package com.recommendation.service.weatherforecast;
 
 import com.recommendation.properties.WeatherConfig;
+import com.recommendation.service.RestException;
+import com.recommendation.service.RestExceptionHandler;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -20,18 +24,21 @@ public class WeatherService {
         this.weatherProps = weatherProps;
     }
 
-    public WeatherForecastJsonResponse retrieveWeatherResponse(String city){
-        WeatherForecastJsonResponse weatherForecast = null;
+    public WeatherForecastJsonResponse retrieveWeatherResponse(String city)throws RestException{
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
-        try{
-             weatherForecast = call.execute().body();
-        }catch(IOException ex){
-            ex.printStackTrace();
+        Response<WeatherForecastJsonResponse> weatherForecastService = null;
+        try {
+            weatherForecastService = call.execute();
+            if(!weatherForecastService.isSuccessful())
+            {
+                throw new RestException(weatherForecastService.message());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        return weatherForecast;
+        return weatherForecastService.body();
     }
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String lat, String lon) throws IOException {
