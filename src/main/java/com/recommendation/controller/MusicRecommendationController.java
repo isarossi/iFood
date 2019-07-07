@@ -12,14 +12,11 @@ import com.recommendation.service.musicplaylist.model.Track;
 import com.recommendation.service.weatherforecast.OpenWeatherServiceInterface;
 import com.recommendation.service.weatherforecast.model.WeatherForecastResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import sun.util.resources.cldr.ext.TimeZoneNames_en_MP;
 
 import java.io.IOException;
 import java.util.Base64;
@@ -36,35 +33,27 @@ public class MusicRecommendationController {
     private MusicRecommendationConfig musicRecConfig;
 
     @RequestMapping(value = "/city")
-     public List<Track> recommendationByCity(String city) throws IOException {
-        WeatherForecastResponse weatherForecastResponse =  retrieveWeatherResponse(city);
-       String genre = retrieveGenreByTemperature(weatherForecastResponse);
-        PlaylistResponse playlistResponse = retrievePlaylistRecommendation();
+    public List<Track> recommendationByCity(String city)  {
+        WeatherForecastResponse weatherForecastResponse = retrieveWeatherResponse(city);
+        PlaylistResponse playlistResponse = retrievePlaylistRecommendation(retrieveGenreByTemperature(weatherForecastResponse));
         return playlistResponse.getTracks();
     }
 
     @RequestMapping(value = {"/lat", "/lon"})
-    public List<Track> recommendationByCoordinates(String lat, String lon) throws IOException {
-        WeatherForecastResponse weatherForecastResponse =  retrieveWeatherResponse(lat,lon);
-        String genre = retrieveGenreByTemperature(weatherForecastResponse);
-        PlaylistResponse playlistResponse = retrievePlaylistRecommendation();
+    public List<Track> recommendationByCoordinates(String lat, String lon) {
+        WeatherForecastResponse weatherForecastResponse = retrieveWeatherResponse(lat, lon);
+        PlaylistResponse playlistResponse = retrievePlaylistRecommendation(retrieveGenreByTemperature(weatherForecastResponse));
         return playlistResponse.getTracks();
     }
 
-    private PlaylistResponse retrievePlaylistRecommendation() throws IOException {
+    private PlaylistResponse retrievePlaylistRecommendation(String genre) throws IOException {
         TokenResponse tokenResponse = retrieveToken();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(musicRecConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         MusicPlaylistServiceInterface musicPlaylistService2 = retrofit.create(MusicPlaylistServiceInterface.class);
-        Call<PlaylistResponse> call = musicPlaylistService2.getRecommendation(Constants.MUSIC_GENRE_PARTY, musicRecConfig.getLimit(), tokenResponse.getTokenType() + Constants.SPACE + tokenResponse.getAccessToken());
+        Call<PlaylistResponse> call = musicPlaylistService2.getRecommendation(genre, musicRecConfig.getLimit(), tokenResponse.getTokenType() + Constants.SPACE + tokenResponse.getAccessToken());
         return call.execute().body();
     }
 
-    private TokenResponse retrieveToken() throws IOException {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(authorizationConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        AuthorizationServiceInterface musicPlaylistService = retrofit.create(AuthorizationServiceInterface.class);
-        Call<TokenResponse> call = musicPlaylistService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + Constants.SPACE + retrieveAuthorizationEncoded());
-        return call.execute().body();
-    }
 
     private WeatherForecastResponse retrieveWeatherResponse(String city) throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
@@ -82,26 +71,32 @@ public class MusicRecommendationController {
         return weatherForecast;
     }
 
+    private TokenResponse retrieveToken() throws IOException {
+        Retrofit retrofit = new Retrofit.Builder().baseUrl(authorizationConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
+        AuthorizationServiceInterface musicPlaylistService = retrofit.create(AuthorizationServiceInterface.class);
+        Call<TokenResponse> call = musicPlaylistService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + Constants.SPACE + retrieveAuthorizationEncoded());
+        return call.execute().body();
+    }
+
     private String retrieveAuthorizationEncoded() {
         String credentials = authorizationConfig.getClientId() + Constants.COLON + authorizationConfig.getClientSecret();
         return Base64.getEncoder().encodeToString(credentials.getBytes());
     }
 
-
     private String retrieveGenreByTemperature(WeatherForecastResponse weatherForecastResponse) {
-        Double temp = weatherForecastResponse.getMain().getTemp();
-        /*if (temp >= 10 && temp <=0 14){
-
+        String recommendation = null;
+        if (weatherForecastResponse.getMain() != null && weatherForecastResponse.getMain().getTemp() != null) {
+            int temp = (weatherForecastResponse.getMain().getTemp()).intValue();
+            if (temp > 30) {
+                recommendation = Constants.MUSIC_GENRE_PARTY;
+            } else if (temp < 10) {
+                recommendation = Constants.MUSIC_GENRE_CLASSICAL;
+            } else if (temp >= 15 && temp <= 30) {
+                recommendation = Constants.MUSIC_GENRE_POP;
+            } else if (temp >= 10 && temp < 15) {
+                recommendation = Constants.MUSIC_GENRE_ROCK;
+            }
         }
-
-        if(temp > 30){
-            return Constants.MUSIC_GENRE_PARTY;
-        }
-
-        if(temp >= 15 && temp <= 30)
-
-        if(temp < 10)*/
-        return "pop";
-
+        return recommendation;
     }
 }
