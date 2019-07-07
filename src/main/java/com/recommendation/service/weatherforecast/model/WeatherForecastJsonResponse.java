@@ -3,19 +3,18 @@ package com.recommendation.service.weatherforecast.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.recommendation.service.weatherforecast.model.MainJsonPojo;
 
-public class WeatherForecastResponse {
+public class WeatherForecastJsonResponse {
 
     @SerializedName("main")
     @Expose
-    private MainJsonPojo main;
+    private MainTemperatureComponent main;
 
-    public MainJsonPojo getMain() {
+    public MainTemperatureComponent getMain() {
         return main;
     }
 
-    public void setMain(MainJsonPojo main) {
+    public void setMain(MainTemperatureComponent main) {
         this.main = main;
     }
 

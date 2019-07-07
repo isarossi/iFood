@@ -4,7 +4,7 @@ package com.recommendation.service.weatherforecast.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MainJsonPojo {
+public class MainTemperatureComponent {
 
     @SerializedName("temp")
     @Expose
