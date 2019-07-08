@@ -39,7 +39,7 @@ public class WeatherService {
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        saveInCache(weatherForecastService.body(), Double.parseDouble("lat"), Double.parseDouble("lon"));
+        saveInCache(weatherForecastService.body(), Double.parseDouble(lat), Double.parseDouble(lon));
         return weatherForecastService.body();
     }
 //REMOVER DAQUI
