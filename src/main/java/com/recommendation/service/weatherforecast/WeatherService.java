@@ -1,7 +1,7 @@
 package com.recommendation.service.weatherforecast;
 
 import com.recommendation.properties.WeatherConfig;
-import com.recommendation.service.RestException;
+import com.recommendation.service.errorhandling.RestException;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class WeatherService {
         return weatherForecastService.body();
     }
 
-    private Response<WeatherForecastJsonResponse> executeWeatherForecastService(Call<WeatherForecastJsonResponse> call) {
+    private Response<WeatherForecastJsonResponse> executeWeatherForecastService(Call<WeatherForecastJsonResponse> call) throws IOException {
         Response<WeatherForecastJsonResponse> weatherForecastService = null;
         try {
             weatherForecastService = call.execute();
@@ -46,7 +46,7 @@ public class WeatherService {
                 throw new RestException(weatherForecastService.errorBody().string());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw e;
         }
         return weatherForecastService;
     }

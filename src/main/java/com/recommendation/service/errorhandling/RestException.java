@@ -1,6 +1,6 @@
-package com.recommendation.service;
+package com.recommendation.service.errorhandling;
 
-public class RestException  extends RuntimeException {
+public class RestException extends RuntimeException {
     private static final long serialVersionUID = 1L;
     private String msg;
 

@@ -1,7 +1,6 @@
-package com.recommendation.service;
+package com.recommendation.service.errorhandling;
 
 import com.google.gson.Gson;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,7 +12,6 @@ import java.io.IOException;
 @RestControllerAdvice
 @ResponseBody
 public class RestExceptionHandler {
-
     @ExceptionHandler(value = {IOException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequest(Exception ex) {

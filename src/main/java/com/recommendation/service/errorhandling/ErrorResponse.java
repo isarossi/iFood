@@ -1,6 +1,4 @@
-package com.recommendation.service;
-
-import org.springframework.http.HttpStatus;
+package com.recommendation.service.errorhandling;
 
 public class ErrorResponse {
     private String cod;
@@ -28,8 +26,7 @@ public class ErrorResponse {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "ErrorResponse [status=" + cod + ", message=" + message + "]";
     }
 }
