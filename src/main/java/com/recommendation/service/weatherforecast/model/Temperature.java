@@ -4,17 +4,11 @@ package com.recommendation.service.weatherforecast.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MainTemperatureComponent {
+public class Temperature {
 
     @SerializedName("temp")
     @Expose
     private Double temp;
-    @SerializedName("pressure")
-    @Expose
-    private Integer pressure;
-    @SerializedName("humidity")
-    @Expose
-    private Integer humidity;
     @SerializedName("temp_min")
     @Expose
     private Double tempMin;
@@ -28,22 +22,6 @@ public class MainTemperatureComponent {
 
     public void setTemp(Double temp) {
         this.temp = temp;
-    }
-
-    public Integer getPressure() {
-        return pressure;
-    }
-
-    public void setPressure(Integer pressure) {
-        this.pressure = pressure;
-    }
-
-    public Integer getHumidity() {
-        return humidity;
-    }
-
-    public void setHumidity(Integer humidity) {
-        this.humidity = humidity;
     }
 
     public Double getTempMin() {

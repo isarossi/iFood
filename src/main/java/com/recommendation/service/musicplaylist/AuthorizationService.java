@@ -3,7 +3,7 @@ package com.recommendation.service.musicplaylist;
 import com.recommendation.service.ServiceConstants;
 import com.recommendation.properties.AuthorizationConfig;
 import com.recommendation.service.errorhandling.RestException;
-import com.recommendation.service.musicplaylist.model.TokenResponse;
+import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
@@ -23,11 +23,11 @@ public class AuthorizationService {
         this.authorizationConfig = authorizationConfig;
     }
 
-    public TokenResponse retrieveToken() throws IOException {
+    public TokenJsonResponse retrieveToken() throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(authorizationConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         AuthorizationServiceInterface tokenService = retrofit.create(AuthorizationServiceInterface.class);
-        Call<TokenResponse> call = tokenService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + ServiceConstants.SPACE + retrieveAuthorizationEncoded());
-        Response<TokenResponse> tokenResponse = executeAuthorizationService(call);
+        Call<TokenJsonResponse> call = tokenService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + ServiceConstants.SPACE + retrieveAuthorizationEncoded());
+        Response<TokenJsonResponse> tokenResponse = executeAuthorizationService(call);
         return tokenResponse.body();
     }
 
@@ -36,8 +36,8 @@ public class AuthorizationService {
         return Base64.getEncoder().encodeToString(credentials.getBytes());
     }
 
-    private Response<TokenResponse> executeAuthorizationService(Call<TokenResponse> call) throws IOException {
-        Response<TokenResponse> tokenResponse = null;
+    private Response<TokenJsonResponse> executeAuthorizationService(Call<TokenJsonResponse> call) throws IOException {
+        Response<TokenJsonResponse> tokenResponse = null;
         try {
             tokenResponse = call.execute();
             if (!tokenResponse.isSuccessful()) {

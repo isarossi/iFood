@@ -5,7 +5,7 @@ import com.recommendation.properties.MusicRecommendationConfig;
 import com.recommendation.properties.WeatherConfig;
 import com.recommendation.service.errorhandling.RestException;
 import com.recommendation.service.musicplaylist.MusicService;
-import com.recommendation.service.musicplaylist.model.PlaylistResponse;
+import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.Track;
 import com.recommendation.service.weatherforecast.WeatherService;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
@@ -31,15 +31,15 @@ public class MusicRecommendationController {
         WeatherService weatherService = new WeatherService(weatherConfig);
         MusicService musicService = new MusicService(authorizationConfig, musicRecConfig);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
-        PlaylistResponse playlistResponse = null;
+        PlaylistJsonResponse playlistJsonResponse = null;
         try {
             weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(city);
             String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
-            playlistResponse = musicService.retrievePlaylistRecommendation(genre);
+            playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
             throw ex;
         }
-        return playlistResponse.getTracks();
+        return playlistJsonResponse.getTracks();
     }
 
     @RequestMapping(value = {"/lat", "/lon"})
@@ -47,15 +47,15 @@ public class MusicRecommendationController {
         WeatherService weatherService = new WeatherService(weatherConfig);
         MusicService musicService = new MusicService(authorizationConfig, musicRecConfig);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
-        PlaylistResponse playlistResponse = null;
+        PlaylistJsonResponse playlistJsonResponse = null;
         try {
             weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(lat, lon);
             String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
-            playlistResponse = musicService.retrievePlaylistRecommendation(genre);
+            playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
             throw ex;
         }
-        return playlistResponse.getTracks();
+        return playlistJsonResponse.getTracks();
     }
 
 

@@ -8,15 +8,33 @@ public class WeatherForecastJsonResponse {
 
     @SerializedName("main")
     @Expose
-    private MainTemperatureComponent main;
+    private Temperature main;
+    @SerializedName("coord")
+    @Expose
+    private Coordinates coord;
+    @SerializedName("name")
+    @Expose
+    private String cityName;
 
-    public MainTemperatureComponent getMain() {
+    public Temperature getMain() {
         return main;
     }
 
-    public void setMain(MainTemperatureComponent main) {
+    public void setMain(Temperature main) {
         this.main = main;
     }
 
+    public Coordinates getCoord() {
+        return coord;
+    }
+    public void setCoord(Coordinates coord) {
+        this.coord = coord;
+    }
+    public String getCityName() {
+        return cityName;
+    }
 
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 }

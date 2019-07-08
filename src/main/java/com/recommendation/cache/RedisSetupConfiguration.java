@@ -1,7 +1,6 @@
 package com.recommendation.cache;
 
-import com.recommendation.properties.RedisConfig;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
@@ -15,12 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisSetupConfiguration {
 
-    @Autowired
-    private RedisConfig redisConfig;
+    //Ver pq ta nulo
+    private static final String REDIS_HOSTNAME="localhost";
+    private static final int REDIS_PORT=6379;
 
     @Bean
     protected JedisConnectionFactory jedisConnectionFactory() {
-        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(redisConfig.getHost(), redisConfig.getPort());
+        RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration(REDIS_HOSTNAME, REDIS_PORT);
         JedisClientConfiguration jedisClientConfiguration = JedisClientConfiguration.builder().usePooling().build();
         JedisConnectionFactory factory = new JedisConnectionFactory(configuration, jedisClientConfiguration);
         factory.afterPropertiesSet();
