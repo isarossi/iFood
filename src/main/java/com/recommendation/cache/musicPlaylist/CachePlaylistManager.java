@@ -1,9 +1,8 @@
 package com.recommendation.cache.musicPlaylist;
 
-import com.recommendation.cache.musicPlaylist.model.GenrePlaylist;
-import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
+import com.recommendation.cache.musicPlaylist.model.cacheGenrePlaylist;
 
 public interface CachePlaylistManager {
-    void save(GenrePlaylist genrePlaylist);
+    void save(cacheGenrePlaylist genrePlaylist);
     Object get(String key);
 }

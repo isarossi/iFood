@@ -1,13 +1,14 @@
 package com.recommendation.cache.musicPlaylist;
 
-import com.recommendation.cache.musicPlaylist.model.GenrePlaylist;
-import com.recommendation.cache.weatherforecast.model.Weather;
-import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
+import com.recommendation.cache.musicPlaylist.model.cacheGenrePlaylist;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.stereotype.Repository;
 
-public class CachePlaylistManagerImpl implements CachePlaylistManager{
+import java.util.concurrent.TimeUnit;
+@Repository
+public class CachePlaylistManagerImpl implements CachePlaylistManager {
     private RedisTemplate redisTemplate;
     private HashOperations hashOperations;
     private ValueOperations valueOperations;
@@ -19,7 +20,12 @@ public class CachePlaylistManagerImpl implements CachePlaylistManager{
     }
 
     @Override
-    public void save(GenrePlaylist genrePlaylist) {
+    public void save(cacheGenrePlaylist genrePlaylist) {
+        valueOperations.set(genrePlaylist.getGenre(), genrePlaylist);
+        setExpireTime(genrePlaylist.getGenre(), 1, TimeUnit.DAYS);
+    }
+    public void setExpireTime(String key, long timeout, TimeUnit unit) {
+        redisTemplate.expire(key, timeout, unit);
     }
 
     @Override

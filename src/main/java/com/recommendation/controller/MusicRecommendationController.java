@@ -1,5 +1,6 @@
 package com.recommendation.controller;
 
+import com.recommendation.cache.musicPlaylist.CachePlaylistManagerImpl;
 import com.recommendation.cache.weatherforecast.CacheWeatherManager;
 import com.recommendation.cache.weatherforecast.CacheWeatherManagerImpl;
 import com.recommendation.properties.AuthorizationProperties;
@@ -23,17 +24,19 @@ public class MusicRecommendationController {
     private WeatherProperties weatherProp;
     @Autowired
     private CacheWeatherManagerImpl weatherCache;
+    @Autowired
+    private CachePlaylistManagerImpl playlistCache;
 
     @RequestMapping(value = "/city")
     public ResponseEntity<PlaylistJsonResponse> recommendationByCity(String city) {
-        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache);
+        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache,playlistCache);
         ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(city);
         return recommendedPlaylist;
     }
 
     @RequestMapping(value = {"/lat", "/lon"})
     public ResponseEntity<PlaylistJsonResponse> recommendationByCoordinates(String lat, String lon) {
-        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache);
+        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache, playlistCache);
         ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(lat, lon);
         return recommendedPlaylist;
     }

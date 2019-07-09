@@ -6,7 +6,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Repository;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 @Repository
@@ -24,9 +23,9 @@ public class CacheWeatherManagerImpl implements CacheWeatherManager {
 
     @Override
     public void save(Weather weather) {
-        valueOperations.set(weather.getCity(),weather);
+        valueOperations.set(weather.getCity(), weather);
         setExpireTime(weather.getCity(), 1, TimeUnit.HOURS);
-        valueOperations.set(weather.retrieveCoordinateKey(),weather);
+        valueOperations.set(weather.retrieveCoordinateKey(), weather);
         setExpireTime(weather.retrieveCoordinateKey(), 1, TimeUnit.HOURS);
     }
 
