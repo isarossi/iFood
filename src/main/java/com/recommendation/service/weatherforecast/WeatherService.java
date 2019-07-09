@@ -17,12 +17,9 @@ import java.io.IOException;
 public class WeatherService {
     private final WeatherProperties weatherProps;
 
-    private CacheManager cacheManager;
-
     @Autowired
-    public WeatherService(WeatherProperties weatherProps, CacheManager cacheManager) {
+    public WeatherService(WeatherProperties weatherProps) {
         this.weatherProps = weatherProps;
-        this.cacheManager = cacheManager;
     }
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
@@ -30,7 +27,6 @@ public class WeatherService {
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        cacheManager.save(weatherForecastService.body());
         return weatherForecastService.body();
     }
 
@@ -40,7 +36,6 @@ public class WeatherService {
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-
         return weatherForecastService.body();
     }
 

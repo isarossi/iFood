@@ -23,10 +23,9 @@ public class MusicService {
 
     private final MusicRecommendationProperties musicRecConfig;
     private final AuthorizationProperties authorizationProperties;
-    private CacheManager cacheManager;
 
     @Autowired
-    public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig, CacheManager cacheManager) {
+    public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig) {
         this.musicRecConfig = musicRecConfig;
         this.authorizationProperties = authorizationProperties;
     }
