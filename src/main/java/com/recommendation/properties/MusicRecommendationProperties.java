@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "music.recommendation")
-public class MusicRecommendationConfig {
+public class MusicRecommendationProperties {
     private String url;
     private String limit;
 

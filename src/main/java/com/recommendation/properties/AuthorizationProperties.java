@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "music.authorization")
-public class AuthorizationConfig {
+public class AuthorizationProperties {
     protected String authorizationPrefix;
     private String url;
     private String clientSecret;

@@ -1,9 +1,10 @@
 package com.recommendation.service.musicplaylist;
 
-import com.recommendation.properties.AuthorizationConfig;
-import com.recommendation.properties.MusicRecommendationConfig;
+import com.recommendation.properties.AuthorizationProperties;
+import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.Constants;
 import com.recommendation.error.RestException;
+import com.recommendation.properties.RedisProperties;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
@@ -19,17 +20,17 @@ import java.io.IOException;
 @Service
 public class MusicService {
 
-    private final MusicRecommendationConfig musicRecConfig;
-    private final AuthorizationConfig authorizationConfig;
+    private final MusicRecommendationProperties musicRecConfig;
+    private final AuthorizationProperties authorizationProperties;
 
     @Autowired
-    public MusicService(AuthorizationConfig authorizationConfig, MusicRecommendationConfig musicRecConfig) {
+    public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig, RedisProperties redisProp) {
         this.musicRecConfig = musicRecConfig;
-        this.authorizationConfig = authorizationConfig;
+        this.authorizationProperties = authorizationProperties;
     }
 
     public PlaylistJsonResponse retrievePlaylistRecommendation(String genre) throws IOException {
-        AuthorizationService authorizationService = new AuthorizationService(authorizationConfig);
+        AuthorizationService authorizationService = new AuthorizationService(authorizationProperties);
         TokenJsonResponse tokenJsonResponse = authorizationService.retrieveToken();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(musicRecConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         MusicPlaylistServiceInterface musicPlaylistService = retrofit.create(MusicPlaylistServiceInterface.class);

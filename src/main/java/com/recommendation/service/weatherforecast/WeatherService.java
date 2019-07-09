@@ -1,7 +1,8 @@
 package com.recommendation.service.weatherforecast;
 
 import com.recommendation.cache.RedisUtil;
-import com.recommendation.properties.WeatherConfig;
+import com.recommendation.properties.RedisProperties;
+import com.recommendation.properties.WeatherProperties;
 import com.recommendation.error.RestException;
 import com.recommendation.cache.weatherforecast.WeatherCache;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
@@ -17,16 +18,15 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class WeatherService {
-    @Autowired
-    private WeatherConfig weatherProps;
+    private final WeatherProperties weatherProps;
     private RedisUtil<WeatherCache> redisUtilWeather;
-/*
-    @Autowired
-    public WeatherService(WeatherConfig weatherProps) {
-        this.weatherProps = weatherProps;
-    }*/
 
+    @Autowired
+    public WeatherService(WeatherProperties weatherProps, RedisProperties redisProp) {
+        this.weatherProps = weatherProps;
+    }
     public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
+
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);

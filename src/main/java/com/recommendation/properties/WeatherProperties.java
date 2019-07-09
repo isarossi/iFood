@@ -1,12 +1,11 @@
 package com.recommendation.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 
-@Component
+@Configuration
 @ConfigurationProperties(prefix = "weather")
-public class WeatherConfig {
+public class WeatherProperties {
     private String url;
     private String appid;
     private String units;

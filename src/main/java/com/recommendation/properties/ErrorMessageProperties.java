@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "error.message")
-public class ErrorMessageConfig {
+public class ErrorMessageProperties {
     private String badRequestMessage;
     private String notFoundMessage;
     private String internalErrorMessage;

@@ -1,8 +1,10 @@
 package com.recommendation.service;
 
 import com.recommendation.error.RestException;
-import com.recommendation.properties.AuthorizationConfig;
-import com.recommendation.properties.MusicRecommendationConfig;
+import com.recommendation.properties.AuthorizationProperties;
+import com.recommendation.properties.MusicRecommendationProperties;
+import com.recommendation.properties.RedisProperties;
+import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.musicplaylist.MusicService;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.Track;
@@ -16,21 +18,41 @@ import java.util.List;
 
 @Service
 public class MusicRecommendationService {
-    @Autowired
-    private AuthorizationConfig authorizationConfig;
-    @Autowired
-    private MusicRecommendationConfig musicRecConfig;
-    // @Autowired
-    // private WeatherConfig weatherConfig;
+    private final AuthorizationProperties authorizationProp;
+    private final MusicRecommendationProperties musicRecommendationProp;
+    private final WeatherProperties weatherProp;
+    private final RedisProperties redisProp;
 
-    public List<Track> getRecommendedPlaylist(String city)throws IOException {
-        // WeatherService weatherService = new WeatherService(weatherConfig);
-        WeatherService weatherService = new WeatherService();
-        MusicService musicService = new MusicService(authorizationConfig, musicRecConfig);
+    @Autowired
+    public MusicRecommendationService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecommendationProp, WeatherProperties weatherProp, RedisProperties redisProp) {
+        this.authorizationProp = authorizationProperties;
+        this.musicRecommendationProp = musicRecommendationProp;
+        this.weatherProp = weatherProp;
+        this.redisProp = redisProp;
+    }
+
+    public List<Track> getRecommendedPlaylist(String city) throws IOException {
+        WeatherService weatherService = new WeatherService(weatherProp, redisProp);
+        MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp, redisProp);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
         PlaylistJsonResponse playlistJsonResponse = null;
         try {
             weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(city);
+            String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
+            playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
+        } catch (RestException ex) {
+            throw ex;
+        }
+        return playlistJsonResponse.getTracks();
+    }
+
+    public List<Track> getRecommendedPlaylist(String lat, String lon) throws IOException {
+        WeatherService weatherService = new WeatherService(weatherProp, redisProp);
+        MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp, redisProp);
+        WeatherForecastJsonResponse weatherForecastJsonResponse = null;
+        PlaylistJsonResponse playlistJsonResponse = null;
+        try {
+            weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(lat, lon);
             String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
             playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
