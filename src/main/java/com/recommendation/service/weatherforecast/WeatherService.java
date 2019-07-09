@@ -24,6 +24,7 @@ public class WeatherService {
     @Autowired
     public WeatherService(WeatherProperties weatherProps, RedisProperties redisProp) {
         this.weatherProps = weatherProps;
+        this.redisUtilWeather = new RedisUtil<WeatherCache>();
     }
     public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
 
@@ -46,6 +47,7 @@ public class WeatherService {
 //REMOVER DAQUI
 
     private void saveInCache(WeatherForecastJsonResponse body, String city) {
+
         WeatherCache weatherCityCache = new WeatherCache(city, body.getCoord().getLat(), body.getCoord().getLon(), body.getMain().getTemp());
         redisUtilWeather.putValueWithExpireTime(weatherCityCache.getStringHashCode(), weatherCityCache, 1, TimeUnit.HOURS); //NULLPOINTER
     }
