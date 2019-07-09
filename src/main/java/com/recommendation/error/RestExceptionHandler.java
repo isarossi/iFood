@@ -1,6 +1,5 @@
-package com.recommendation.service.errorhandling;
+package com.recommendation.error;
 
-import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,20 +14,19 @@ public class RestExceptionHandler {
     @ExceptionHandler(value = {IOException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse badRequest(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.toString(), ex.getCause().getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RestException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleRestException(RestException ex) {
-        Gson gson = new Gson();
-        ErrorResponse errorResponse = gson.fromJson(ex.getMsg(), ErrorResponse.class);
-        return errorResponse;
+        return new ErrorResponse(HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleOtherException(Exception ex) {
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.toString(), ex.toString());
+        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

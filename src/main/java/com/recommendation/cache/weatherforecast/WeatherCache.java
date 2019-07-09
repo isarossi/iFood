@@ -1,4 +1,4 @@
-package com.recommendation.service.weatherforecast.cache;
+package com.recommendation.cache.weatherforecast;
 
 import java.util.Objects;
 

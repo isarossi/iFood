@@ -2,8 +2,8 @@ package com.recommendation.service.weatherforecast;
 
 import com.recommendation.cache.RedisUtil;
 import com.recommendation.properties.WeatherConfig;
-import com.recommendation.service.errorhandling.RestException;
-import com.recommendation.service.weatherforecast.cache.WeatherCache;
+import com.recommendation.error.RestException;
+import com.recommendation.cache.weatherforecast.WeatherCache;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class WeatherService {
-    private final WeatherConfig weatherProps;
+    @Autowired
+    private WeatherConfig weatherProps;
     private RedisUtil<WeatherCache> redisUtilWeather;
-
+/*
     @Autowired
     public WeatherService(WeatherConfig weatherProps) {
         this.weatherProps = weatherProps;
-    }
+    }*/
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
@@ -43,9 +44,10 @@ public class WeatherService {
         return weatherForecastService.body();
     }
 //REMOVER DAQUI
+
     private void saveInCache(WeatherForecastJsonResponse body, String city) {
         WeatherCache weatherCityCache = new WeatherCache(city, body.getCoord().getLat(), body.getCoord().getLon(), body.getMain().getTemp());
-        redisUtilWeather.putValueWithExpireTime(weatherCityCache.getStringHashCode(), weatherCityCache, 1, TimeUnit.HOURS);
+        redisUtilWeather.putValueWithExpireTime(weatherCityCache.getStringHashCode(), weatherCityCache, 1, TimeUnit.HOURS); //NULLPOINTER
     }
 
     private void saveInCache(WeatherForecastJsonResponse body, double lat, double lon) {

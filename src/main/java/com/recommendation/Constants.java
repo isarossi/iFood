@@ -1,6 +1,6 @@
-package com.recommendation.service;
+package com.recommendation;
 
-public class ServiceConstants {
+public class Constants {
     public static final String COLON = ":";
     public static final String SPACE = " ";
 

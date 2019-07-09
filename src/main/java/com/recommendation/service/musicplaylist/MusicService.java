@@ -1,14 +1,11 @@
 package com.recommendation.service.musicplaylist;
 
-import com.recommendation.cache.RedisUtil;
 import com.recommendation.properties.AuthorizationConfig;
 import com.recommendation.properties.MusicRecommendationConfig;
-import com.recommendation.service.ServiceConstants;
-import com.recommendation.service.errorhandling.RestException;
+import com.recommendation.Constants;
+import com.recommendation.error.RestException;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
-import com.recommendation.service.weatherforecast.WeatherService;
-import com.recommendation.service.weatherforecast.cache.WeatherCache;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +33,7 @@ public class MusicService {
         TokenJsonResponse tokenJsonResponse = authorizationService.retrieveToken();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(musicRecConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         MusicPlaylistServiceInterface musicPlaylistService = retrofit.create(MusicPlaylistServiceInterface.class);
-        Call<PlaylistJsonResponse> call = musicPlaylistService.getRecommendation(genre, musicRecConfig.getLimit(), tokenJsonResponse.getTokenType() + ServiceConstants.SPACE + tokenJsonResponse.getAccessToken());
+        Call<PlaylistJsonResponse> call = musicPlaylistService.getRecommendation(genre, musicRecConfig.getLimit(), tokenJsonResponse.getTokenType() + Constants.SPACE + tokenJsonResponse.getAccessToken());
         Response<PlaylistJsonResponse> playlistResponse = executeWeatherForecastService(call);
         return playlistResponse.body();
     }
@@ -59,14 +56,14 @@ public class MusicService {
         String recommendation = null;
         if (weatherForecastJsonResponse.getMain() != null && weatherForecastJsonResponse.getMain().getTemp() != null) {
             int temp = (weatherForecastJsonResponse.getMain().getTemp()).intValue();
-            if (temp > ServiceConstants.MAX_TEMPERATURE) {
-                recommendation = ServiceConstants.MUSIC_GENRE_PARTY;
-            } else if (temp < ServiceConstants.MIN_TEMPERATURE) {
-                recommendation = ServiceConstants.MUSIC_GENRE_CLASSICAL;
-            } else if (temp >= ServiceConstants.FIFTEEN_CELSIUS_TEMPERATURE && temp <= ServiceConstants.MAX_TEMPERATURE) {
-                recommendation = ServiceConstants.MUSIC_GENRE_POP;
-            } else if (temp >= ServiceConstants.MIN_TEMPERATURE && temp < ServiceConstants.FIFTEEN_CELSIUS_TEMPERATURE) {
-                recommendation = ServiceConstants.MUSIC_GENRE_ROCK;
+            if (temp > Constants.MAX_TEMPERATURE) {
+                recommendation = Constants.MUSIC_GENRE_PARTY;
+            } else if (temp < Constants.MIN_TEMPERATURE) {
+                recommendation = Constants.MUSIC_GENRE_CLASSICAL;
+            } else if (temp >= Constants.FIFTEEN_CELSIUS_TEMPERATURE && temp <= Constants.MAX_TEMPERATURE) {
+                recommendation = Constants.MUSIC_GENRE_POP;
+            } else if (temp >= Constants.MIN_TEMPERATURE && temp < Constants.FIFTEEN_CELSIUS_TEMPERATURE) {
+                recommendation = Constants.MUSIC_GENRE_ROCK;
             }
         }
         return recommendation;

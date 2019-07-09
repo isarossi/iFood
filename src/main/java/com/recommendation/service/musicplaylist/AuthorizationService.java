@@ -1,8 +1,8 @@
 package com.recommendation.service.musicplaylist;
 
-import com.recommendation.service.ServiceConstants;
+import com.recommendation.Constants;
 import com.recommendation.properties.AuthorizationConfig;
-import com.recommendation.service.errorhandling.RestException;
+import com.recommendation.error.RestException;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,13 +26,13 @@ public class AuthorizationService {
     public TokenJsonResponse retrieveToken() throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(authorizationConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         AuthorizationServiceInterface tokenService = retrofit.create(AuthorizationServiceInterface.class);
-        Call<TokenJsonResponse> call = tokenService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + ServiceConstants.SPACE + retrieveAuthorizationEncoded());
+        Call<TokenJsonResponse> call = tokenService.getAccessToken(authorizationConfig.getGrantType(), authorizationConfig.getAuthorizationPrefix() + Constants.SPACE + retrieveAuthorizationEncoded());
         Response<TokenJsonResponse> tokenResponse = executeAuthorizationService(call);
         return tokenResponse.body();
     }
 
     private String retrieveAuthorizationEncoded() {
-        String credentials = authorizationConfig.getClientId() + ServiceConstants.COLON + authorizationConfig.getClientSecret();
+        String credentials = authorizationConfig.getClientId() + Constants.COLON + authorizationConfig.getClientSecret();
         return Base64.getEncoder().encodeToString(credentials.getBytes());
     }
 
