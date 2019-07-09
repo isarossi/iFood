@@ -1,10 +1,11 @@
 package com.recommendation.service.musicplaylist;
 
+import com.recommendation.cache.CacheManager;
 import com.recommendation.properties.AuthorizationProperties;
 import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.Constants;
 import com.recommendation.error.RestException;
-import com.recommendation.properties.RedisProperties;
+import com.recommendation.properties.CacheProperties;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
@@ -22,9 +23,10 @@ public class MusicService {
 
     private final MusicRecommendationProperties musicRecConfig;
     private final AuthorizationProperties authorizationProperties;
+    private CacheManager cacheManager;
 
     @Autowired
-    public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig, RedisProperties redisProp) {
+    public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig, CacheManager cacheManager) {
         this.musicRecConfig = musicRecConfig;
         this.authorizationProperties = authorizationProperties;
     }

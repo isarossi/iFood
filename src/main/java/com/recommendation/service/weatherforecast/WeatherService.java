@@ -1,10 +1,8 @@
 package com.recommendation.service.weatherforecast;
 
-import com.recommendation.cache.RedisUtil;
-import com.recommendation.properties.RedisProperties;
-import com.recommendation.properties.WeatherProperties;
+import com.recommendation.cache.CacheManager;
 import com.recommendation.error.RestException;
-import com.recommendation.cache.weatherforecast.WeatherCache;
+import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,47 +12,36 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class WeatherService {
     private final WeatherProperties weatherProps;
-    private RedisUtil<WeatherCache> redisUtilWeather;
+
+    private CacheManager cacheManager;
 
     @Autowired
-    public WeatherService(WeatherProperties weatherProps, RedisProperties redisProp) {
+    public WeatherService(WeatherProperties weatherProps, CacheManager cacheManager) {
         this.weatherProps = weatherProps;
-        this.redisUtilWeather = new RedisUtil<WeatherCache>();
+        this.cacheManager = cacheManager;
     }
-    public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
 
+    public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        saveInCache(weatherForecastService.body(), city);
+        cacheManager.save(weatherForecastService.body());
         return weatherForecastService.body();
     }
+
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String lat, String lon) throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        saveInCache(weatherForecastService.body(), Double.parseDouble(lat), Double.parseDouble(lon));
+
         return weatherForecastService.body();
-    }
-//REMOVER DAQUI
-
-    private void saveInCache(WeatherForecastJsonResponse body, String city) {
-
-        WeatherCache weatherCityCache = new WeatherCache(city, body.getCoord().getLat(), body.getCoord().getLon(), body.getMain().getTemp());
-        redisUtilWeather.putValueWithExpireTime(weatherCityCache.getStringHashCode(), weatherCityCache, 1, TimeUnit.HOURS); //NULLPOINTER
-    }
-
-    private void saveInCache(WeatherForecastJsonResponse body, double lat, double lon) {
-        WeatherCache weatherCityCache = new WeatherCache(body.getCityName(), lat, lon, body.getMain().getTemp());
-        redisUtilWeather.putValueWithExpireTime(weatherCityCache.getStringHashCode(), weatherCityCache, 1, TimeUnit.HOURS);
     }
 
     private Response<WeatherForecastJsonResponse> executeWeatherForecastService(Call<WeatherForecastJsonResponse> call) throws IOException {

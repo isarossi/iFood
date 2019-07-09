@@ -1,8 +1,7 @@
 package com.recommendation.cache;
 
-import com.recommendation.properties.RedisProperties;
+import com.recommendation.properties.CacheProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration;
@@ -14,10 +13,10 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RedisSetupConfiguration {
+public class RedisConfiguration {
 
     @Autowired
-    public RedisProperties redisProp;
+    public CacheProperties redisProp;
 
     @Bean
     protected JedisConnectionFactory jedisConnectionFactory() {

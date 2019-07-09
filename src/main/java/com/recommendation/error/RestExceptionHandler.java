@@ -3,35 +3,38 @@ package com.recommendation.error;
 import com.recommendation.properties.ErrorMessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.IOException;
 
 @RestControllerAdvice
-@ResponseBody
-public class RestExceptionHandler {
+public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @Autowired
     ErrorMessageProperties errorMessageProperties;
 
     @ExceptionHandler(value = {IOException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse badRequest(Exception ex) {
-        return new ErrorResponse(errorMessageProperties.getBadRequestMessage());
+    public ResponseEntity<ErrorResponse> badRequest(Exception ex) {
+        ErrorResponse error = new ErrorResponse(errorMessageProperties.getBadRequestMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(RestException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleRestException(RestException ex) {
-        return new ErrorResponse(errorMessageProperties.getNotFoundMessage());
+    public ResponseEntity<ErrorResponse> handleRestException(RestException ex) {
+        ErrorResponse error = new ErrorResponse(errorMessageProperties.getNotFoundMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleOtherException(Exception ex) {
-        return new ErrorResponse(errorMessageProperties.getInternalErrorMessage());
+    public ResponseEntity<ErrorResponse> handleOtherException(Exception ex) {
+        ErrorResponse error = new ErrorResponse(errorMessageProperties.getInternalErrorMessage());
+        return new ResponseEntity<ErrorResponse>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
