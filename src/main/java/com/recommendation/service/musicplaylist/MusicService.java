@@ -1,11 +1,9 @@
 package com.recommendation.service.musicplaylist;
 
-import com.recommendation.cache.CacheManager;
 import com.recommendation.properties.AuthorizationProperties;
 import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.Constants;
 import com.recommendation.error.RestException;
-import com.recommendation.properties.CacheProperties;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
@@ -22,12 +20,12 @@ import java.io.IOException;
 public class MusicService {
 
     private final MusicRecommendationProperties musicRecConfig;
-    private final AuthorizationProperties authorizationProperties;
+   private final AuthorizationProperties authorizationProperties;
 
     @Autowired
     public MusicService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecConfig) {
         this.musicRecConfig = musicRecConfig;
-        this.authorizationProperties = authorizationProperties;
+       this.authorizationProperties = authorizationProperties;
     }
 
     public PlaylistJsonResponse retrievePlaylistRecommendation(String genre) throws IOException {

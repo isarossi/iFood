@@ -5,6 +5,7 @@ import com.recommendation.properties.AuthorizationProperties;
 import com.recommendation.error.RestException;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -16,13 +17,14 @@ import java.util.Base64;
 
 @Service
 public class AuthorizationService {
-    private final AuthorizationProperties authorizationProperties;
+    @Autowired
+    private AuthorizationProperties authorizationProperties;
 
     @Autowired
     public AuthorizationService(AuthorizationProperties authorizationProperties) {
         this.authorizationProperties = authorizationProperties;
     }
-
+    @Bean
     public TokenJsonResponse retrieveToken() throws IOException {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(authorizationProperties.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
         AuthorizationServiceInterface tokenService = retrofit.create(AuthorizationServiceInterface.class);

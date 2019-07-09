@@ -1,10 +1,13 @@
 package com.recommendation.service.weatherforecast;
 
-import com.recommendation.cache.CacheManager;
+import com.recommendation.cache.weatherforecast.CacheWeatherManager;
+import com.recommendation.cache.weatherforecast.CacheWeatherManagerImpl;
+import com.recommendation.cache.weatherforecast.model.Weather;
 import com.recommendation.error.RestException;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -16,10 +19,12 @@ import java.io.IOException;
 @Service
 public class WeatherService {
     private final WeatherProperties weatherProps;
+    private CacheWeatherManager weatherCache;
 
     @Autowired
-    public WeatherService(WeatherProperties weatherProps) {
+    public WeatherService(WeatherProperties weatherProps, CacheWeatherManager weatherCache) {
         this.weatherProps = weatherProps;
+        this.weatherCache = weatherCache;
     }
 
     public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
@@ -27,6 +32,8 @@ public class WeatherService {
         OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
         Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
+        Weather w = new Weather(weatherForecastService.body());
+        weatherCache.save(w);
         return weatherForecastService.body();
     }
 

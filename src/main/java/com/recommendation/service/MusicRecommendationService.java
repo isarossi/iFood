@@ -1,9 +1,8 @@
 package com.recommendation.service;
 
-import com.recommendation.cache.CacheManager;
+import com.recommendation.cache.weatherforecast.CacheWeatherManager;
 import com.recommendation.error.RestException;
 import com.recommendation.properties.AuthorizationProperties;
-import com.recommendation.properties.CacheProperties;
 import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.musicplaylist.MusicService;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 
 @Service
@@ -22,19 +20,18 @@ public class MusicRecommendationService {
     private final AuthorizationProperties authorizationProp;
     private final MusicRecommendationProperties musicRecommendationProp;
     private final WeatherProperties weatherProp;
-
-
+    private  CacheWeatherManager weatherCache;
 
     @Autowired
-    public MusicRecommendationService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecommendationProp, WeatherProperties weatherProp) {
+    public MusicRecommendationService(AuthorizationProperties authorizationProperties, MusicRecommendationProperties musicRecommendationProp, WeatherProperties weatherProp, CacheWeatherManager weatherCache) {
         this.authorizationProp = authorizationProperties;
         this.musicRecommendationProp = musicRecommendationProp;
         this.weatherProp = weatherProp;
-
+        this.weatherCache = weatherCache;
     }
 
     public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String city) {
-        WeatherService weatherService = new WeatherService(weatherProp);
+        WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
         PlaylistJsonResponse playlistJsonResponse = null;
@@ -51,7 +48,7 @@ public class MusicRecommendationService {
     }
 
     public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String lat, String lon) {
-        WeatherService weatherService = new WeatherService(weatherProp);
+        WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
         WeatherForecastJsonResponse weatherForecastJsonResponse = null;
         PlaylistJsonResponse playlistJsonResponse = null;
