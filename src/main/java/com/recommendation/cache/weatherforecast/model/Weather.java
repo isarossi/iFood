@@ -4,7 +4,7 @@ import com.recommendation.service.weatherforecast.model.WeatherForecastJsonRespo
 
 import java.io.Serializable;
 
-public class Weather implements Serializable {
+public class Weather {
     private double temp;
     private String city;
     private double lat;
@@ -19,9 +19,17 @@ public class Weather implements Serializable {
 
     public Weather(WeatherForecastJsonResponse body) {
         this.temp = body.getMain().getTemp();
-        this.city = body.getCityName();
+        this.city = body.getCityName().toLowerCase();
         this.lat = body.getCoord().getLat();
         this.lon =  body.getCoord().getLon();
+    }
+
+    public static String retrieveCoordinateKey(String lat, String lon){
+        return lat+":"+lon;
+    }
+
+    public String retrieveCoordinateKey(){
+        return String.valueOf(this.lat)+":"+String.valueOf(this.lon);
     }
 
     public double getTemp() {

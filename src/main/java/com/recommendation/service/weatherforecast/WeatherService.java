@@ -1,13 +1,11 @@
 package com.recommendation.service.weatherforecast;
 
 import com.recommendation.cache.weatherforecast.CacheWeatherManager;
-import com.recommendation.cache.weatherforecast.CacheWeatherManagerImpl;
 import com.recommendation.cache.weatherforecast.model.Weather;
 import com.recommendation.error.RestException;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.weatherforecast.model.WeatherForecastJsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -27,23 +25,44 @@ public class WeatherService {
         this.weatherCache = weatherCache;
     }
 
-    public WeatherForecastJsonResponse retrieveWeatherResponse(String city) throws IOException {
+    private OpenWeatherServiceInterface Init() {
         Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
-        Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
-        Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        Weather w = new Weather(weatherForecastService.body());
-        weatherCache.save(w);
-        return weatherForecastService.body();
+        return retrofit.create(OpenWeatherServiceInterface.class);
     }
 
+    public double retrieveWeatherResponse(String city) throws IOException {
+        double temp;
+        if (city != null && weatherCache.hasEntry(city.toLowerCase())) {
+            Weather weather = (Weather) weatherCache.get(city.toLowerCase());
+            temp = weather.getTemp();
+        } else {
+            OpenWeatherServiceInterface openWeatherService = Init();
+            Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
+            Response<WeatherForecastJsonResponse> weatherForecastService = executeService(call);
+            temp = weatherForecastService.body().getMain().getTemp();
+        }
+        return temp;
+    }
 
-    public WeatherForecastJsonResponse retrieveWeatherResponse(String lat, String lon) throws IOException {
-        Retrofit retrofit = new Retrofit.Builder().baseUrl(weatherProps.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
-        OpenWeatherServiceInterface openWeatherService = retrofit.create(OpenWeatherServiceInterface.class);
-        Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
+    public double retrieveWeatherResponse(String lat, String lon) throws IOException {
+        double temp;
+        if (lat != null && lon != null) {
+            Weather weather = (Weather) weatherCache.get(Weather.retrieveCoordinateKey(lat, lon));
+            temp = weather.getTemp();
+        } else {
+            OpenWeatherServiceInterface openWeatherService = Init();
+            Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
+            Response<WeatherForecastJsonResponse> weatherForecastService = executeService(call);
+            temp = weatherForecastService.body().getMain().getTemp();
+        }
+        return temp;
+    }
+
+    private Response<WeatherForecastJsonResponse> executeService(Call<WeatherForecastJsonResponse> call) throws IOException {
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
-        return weatherForecastService.body();
+        Weather weather = new Weather(weatherForecastService.body());
+        weatherCache.save(weather);
+        return weatherForecastService;
     }
 
     private Response<WeatherForecastJsonResponse> executeWeatherForecastService(Call<WeatherForecastJsonResponse> call) throws IOException {
@@ -58,5 +77,6 @@ public class WeatherService {
         }
         return weatherForecastService;
     }
+
 
 }

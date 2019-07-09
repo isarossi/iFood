@@ -52,10 +52,9 @@ public class MusicService {
     }
 
 
-    public String retrieveGenreByTemperature(WeatherForecastJsonResponse weatherForecastJsonResponse) {
+    public String retrieveGenreByTemperature(double doubleTemp) {
         String recommendation = null;
-        if (weatherForecastJsonResponse.getMain() != null && weatherForecastJsonResponse.getMain().getTemp() != null) {
-            int temp = (weatherForecastJsonResponse.getMain().getTemp()).intValue();
+            int temp = (int) doubleTemp;
             if (temp > Constants.MAX_TEMPERATURE) {
                 recommendation = Constants.MUSIC_GENRE_PARTY;
             } else if (temp < Constants.MIN_TEMPERATURE) {
@@ -65,7 +64,6 @@ public class MusicService {
             } else if (temp >= Constants.MIN_TEMPERATURE && temp < Constants.FIFTEEN_CELSIUS_TEMPERATURE) {
                 recommendation = Constants.MUSIC_GENRE_ROCK;
             }
-        }
         return recommendation;
     }
 }

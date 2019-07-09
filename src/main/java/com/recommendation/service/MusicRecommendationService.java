@@ -33,11 +33,11 @@ public class MusicRecommendationService {
     public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String city) {
         WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
-        WeatherForecastJsonResponse weatherForecastJsonResponse = null;
+        double temp;
         PlaylistJsonResponse playlistJsonResponse = null;
         try {
-            weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(city);
-            String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
+            temp = weatherService.retrieveWeatherResponse(city);
+            String genre = musicService.retrieveGenreByTemperature(temp);
             playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
             throw ex;
@@ -50,11 +50,11 @@ public class MusicRecommendationService {
     public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String lat, String lon) {
         WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
-        WeatherForecastJsonResponse weatherForecastJsonResponse = null;
+        double temp;
         PlaylistJsonResponse playlistJsonResponse = null;
         try {
-            weatherForecastJsonResponse = weatherService.retrieveWeatherResponse(lat, lon);
-            String genre = musicService.retrieveGenreByTemperature(weatherForecastJsonResponse);
+            temp = weatherService.retrieveWeatherResponse(lat, lon);
+            String genre = musicService.retrieveGenreByTemperature(temp);
             playlistJsonResponse = musicService.retrievePlaylistRecommendation(genre);
         } catch (RestException ex) {
             throw ex;
