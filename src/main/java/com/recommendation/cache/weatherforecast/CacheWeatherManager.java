@@ -5,6 +5,5 @@ import com.recommendation.cache.weatherforecast.model.Weather;
 public interface CacheWeatherManager {
     void save(Weather weather);
     Object get(String key);
-    boolean hasEntry(String key);
 
 }

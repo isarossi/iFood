@@ -32,7 +32,7 @@ public class WeatherService {
 
     public double retrieveWeatherResponse(String city) throws IOException {
         double temp;
-        if (city != null && weatherCache.hasEntry(city.toLowerCase())) {
+        if (city != null && weatherCache.get(city.toLowerCase()) != null) {
             Weather weather = (Weather) weatherCache.get(city.toLowerCase());
             temp = weather.getTemp();
         } else {
@@ -46,6 +46,7 @@ public class WeatherService {
 
     public double retrieveWeatherResponse(String lat, String lon) throws IOException {
         double temp;
+        //Double.parseDouble(string)
         if (lat != null && lon != null) {
             Weather weather = (Weather) weatherCache.get(Weather.retrieveCoordinateKey(lat, lon));
             temp = weather.getTemp();

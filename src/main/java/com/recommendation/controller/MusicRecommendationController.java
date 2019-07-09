@@ -30,12 +30,12 @@ public class MusicRecommendationController {
         ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(city);
         return recommendedPlaylist;
     }
-/*
+
     @RequestMapping(value = {"/lat", "/lon"})
     public ResponseEntity<PlaylistJsonResponse> recommendationByCoordinates(String lat, String lon) {
-        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp);
+        MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache);
         ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(lat, lon);
         return recommendedPlaylist;
-    }*/
+    }
 
 }

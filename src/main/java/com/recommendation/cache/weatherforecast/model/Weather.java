@@ -4,7 +4,7 @@ import com.recommendation.service.weatherforecast.model.WeatherForecastJsonRespo
 
 import java.io.Serializable;
 
-public class Weather {
+public class Weather implements Serializable {
     private double temp;
     private String city;
     private double lat;

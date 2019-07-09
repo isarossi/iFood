@@ -35,10 +35,6 @@ public class CacheWeatherManagerImpl implements CacheWeatherManager {
         return valueOperations.get(key);
     }
 
-    @Override
-    public boolean hasEntry(String key) {
-        return (get(key) != null);
-    }
 
     public void setExpireTime(String key, long timeout, TimeUnit unit) {
         redisTemplate.expire(key, timeout, unit);
