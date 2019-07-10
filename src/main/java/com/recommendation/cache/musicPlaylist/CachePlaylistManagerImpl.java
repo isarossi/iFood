@@ -1,6 +1,6 @@
 package com.recommendation.cache.musicPlaylist;
 
-import com.recommendation.cache.musicPlaylist.model.cacheGenrePlaylist;
+import com.recommendation.cache.musicPlaylist.model.GenrePlaylist;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -20,16 +20,17 @@ public class CachePlaylistManagerImpl implements CachePlaylistManager {
     }
 
     @Override
-    public void save(cacheGenrePlaylist genrePlaylist) {
+    public void save(GenrePlaylist genrePlaylist) {
         valueOperations.set(genrePlaylist.getGenre(), genrePlaylist);
         setExpireTime(genrePlaylist.getGenre(), 1, TimeUnit.DAYS);
     }
+
     public void setExpireTime(String key, long timeout, TimeUnit unit) {
         redisTemplate.expire(key, timeout, unit);
     }
 
     @Override
     public Object get(String key) {
-        return null;
+        return valueOperations.get(key);
     }
 }

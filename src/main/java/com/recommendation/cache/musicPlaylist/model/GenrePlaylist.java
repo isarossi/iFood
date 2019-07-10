@@ -3,12 +3,13 @@ package com.recommendation.cache.musicPlaylist.model;
 import java.io.Serializable;
 import java.util.List;
 
-public class cacheGenrePlaylist implements Serializable {
+public class GenrePlaylist implements Serializable {
     private String genre;
-    private List<Track> playlist;
+    private List<String> playlist;
 
-    public cacheGenrePlaylist(String genre) {
+    public GenrePlaylist(String genre, List<String> playlist) {
         this.genre = genre;
+        this.playlist = playlist;
     }
 
     public String getGenre() {
@@ -19,11 +20,11 @@ public class cacheGenrePlaylist implements Serializable {
         this.genre = genre;
     }
 
-    public List<Track> getPlaylist() {
+    public List<String> getPlaylist() {
         return playlist;
     }
 
-    public void setPlaylist(List<Track> playlist) {
+    public void setPlaylist(List<String> playlist) {
         this.playlist = playlist;
     }
 }

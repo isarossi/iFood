@@ -2,14 +2,14 @@ package com.recommendation.service.musicplaylist;
 
 import com.recommendation.Constants;
 import com.recommendation.cache.musicPlaylist.CachePlaylistManager;
-import com.recommendation.cache.musicPlaylist.model.cacheGenrePlaylist;
+import com.recommendation.cache.musicPlaylist.model.GenrePlaylist;
 import com.recommendation.error.RestException;
 import com.recommendation.properties.AuthorizationProperties;
 import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.TokenJsonResponse;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -17,6 +17,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class MusicService {
@@ -30,38 +33,34 @@ public class MusicService {
         this.authorizationProperties = authorizationProperties;
     }
 
-    public ResponseEntity<Object> retrievePlaylistRecommendation(CachePlaylistManager cachePlaylist, String genre) throws IOException {
-        PlaylistJsonResponse playlistResponse = null;
-        Response<PlaylistJsonResponse> playlistApiResponse = null;
+    public List<String> retrievePlaylistRecommendation(CachePlaylistManager cachePlaylist, String genre) throws IOException {
+        List<String> playlist = new ArrayList<>();
         if (genre != null && cachePlaylist.get(genre.toLowerCase()) != null) {
-            playlistResponse = retrieveFromCache(cachePlaylist, genre);
-
+            playlist = retrieveFromCache(cachePlaylist, genre);
         } else {
             AuthorizationService authorizationService = new AuthorizationService(authorizationProperties);
             TokenJsonResponse tokenJsonResponse = authorizationService.retrieveToken();
             Retrofit retrofit = new Retrofit.Builder().baseUrl(musicRecConfig.getUrl()).addConverterFactory(GsonConverterFactory.create()).build();
             MusicPlaylistServiceInterface musicPlaylistService = retrofit.create(MusicPlaylistServiceInterface.class);
             Call<PlaylistJsonResponse> call = musicPlaylistService.getRecommendation(genre, musicRecConfig.getLimit(), tokenJsonResponse.getTokenType() + Constants.SPACE + tokenJsonResponse.getAccessToken());
-            playlistApiResponse = executeWeatherForecastService(call);
-            playlistResponse = playlistApiResponse.body();
-            saveInCache(cachePlaylist, genre, playlistResponse);
+            Response<PlaylistJsonResponse> playlistAPIResponse = executeWeatherForecastService(call);
+            PlaylistJsonResponse playlistJsonResponse = playlistAPIResponse.body();
+            saveInCache(cachePlaylist, genre, playlistJsonResponse);
         }
-        return ResponseEntity<Object>;
-    }
-
-    private PlaylistJsonResponse retrieveFromCache(CachePlaylistManager playlistCache, String genre) {
-        PlaylistJsonResponse playlistResponse = new PlaylistJsonResponse();
-        cacheGenrePlaylist cacheGenrePlaylist = (cacheGenrePlaylist) playlistCache.get(genre.toLowerCase());
-        Playlist playlist = cacheGenrePlaylist.getPlaylist();
-        playlistResponse.setTracks(playlist.getTracks());
-        return playlistResponse;
+        return playlist;
     }
 
     private void saveInCache(CachePlaylistManager playlistCache, String genre, PlaylistJsonResponse playlistResponse) {
-        Playlist playlist = new Playlist(playlistResponse.getTracks());
-        cacheGenrePlaylist cacheGenrePlaylist = new cacheGenrePlaylist(genre, playlist);
-        playlistCache.save(cacheGenrePlaylist);
+        GenrePlaylist genrePlaylist = new GenrePlaylist(genre, playlistResponse.setTracks());
+        playlistCache.save(genrePlaylist);
     }
+
+    private List<String> retrieveFromCache(CachePlaylistManager playlistCache, String genre) {
+        List<String> playlist = new ArrayList<>();
+        GenrePlaylist genrePlaylist = playlistCache.get(genre);
+        return genrePlaylist.getPlaylist();
+    }
+
 
     private Response<PlaylistJsonResponse> executeWeatherForecastService(Call<PlaylistJsonResponse> call) throws IOException {
         Response<PlaylistJsonResponse> playlistResponse = null;
