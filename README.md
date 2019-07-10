@@ -1,4 +1,4 @@
-# Music Rwcommendation API
+# Music Recommendation API
 
 It is a micro-service able to accept RESTful requests receiving as parameter either city name or lat long coordinates. it returns a playlist recommendation according to the current temperature.
 
@@ -26,4 +26,3 @@ http://localhost:8080/recommendation/city?city=London
 http://localhost:8080/recommendation/lat?lat=51.51&lon=-0.13
 http://localhost:8080/recommendation/lat?lat=2&lon=-0.13
 
-### Break down into end to end tests
