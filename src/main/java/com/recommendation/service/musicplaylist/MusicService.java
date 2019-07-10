@@ -83,19 +83,4 @@ public class MusicService {
         return playlistResponse;
     }
 
-
-    public String retrieveGenreByTemperature(double doubleTemp) {
-        String recommendation = null;
-        int temp = (int) doubleTemp;
-        if (temp > Constants.MAX_TEMPERATURE) {
-            recommendation = Constants.MUSIC_GENRE_PARTY;
-        } else if (temp < Constants.MIN_TEMPERATURE) {
-            recommendation = Constants.MUSIC_GENRE_CLASSICAL;
-        } else if (temp >= Constants.FIFTEEN_CELSIUS_TEMPERATURE && temp <= Constants.MAX_TEMPERATURE) {
-            recommendation = Constants.MUSIC_GENRE_POP;
-        } else if (temp >= Constants.MIN_TEMPERATURE && temp < Constants.FIFTEEN_CELSIUS_TEMPERATURE) {
-            recommendation = Constants.MUSIC_GENRE_ROCK;
-        }
-        return recommendation;
-    }
 }

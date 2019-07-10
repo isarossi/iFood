@@ -1,5 +1,6 @@
 package com.recommendation.service;
 
+import com.recommendation.Constants;
 import com.recommendation.cache.musicPlaylist.CachePlaylistManager;
 import com.recommendation.cache.musicPlaylist.CachePlaylistManagerImpl;
 import com.recommendation.cache.weatherforecast.CacheWeatherManager;
@@ -8,7 +9,6 @@ import com.recommendation.properties.AuthorizationProperties;
 import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.musicplaylist.MusicService;
-import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
 import com.recommendation.service.musicplaylist.model.PlaylistResponse;
 import com.recommendation.service.weatherforecast.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.List;
 
 @Service
 public class MusicRecommendationService {
@@ -43,7 +42,7 @@ public class MusicRecommendationService {
         double temp;
         try {
             temp = weatherService.retrieveWeatherResponse(city);
-            String genre = musicService.retrieveGenreByTemperature(temp);
+            String genre = retrieveGenreByTemperature(temp);
             playlistResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
         } catch (RestException ex) {
             throw ex;
@@ -60,7 +59,7 @@ public class MusicRecommendationService {
         PlaylistResponse playlistResponse = null;
         try {
             temp = weatherService.retrieveWeatherResponse(lat, lon);
-            String genre = musicService.retrieveGenreByTemperature(temp);
+            String genre = retrieveGenreByTemperature(temp);
             playlistResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
         } catch (RestException ex) {
             throw ex;
@@ -69,5 +68,20 @@ public class MusicRecommendationService {
         }
         return new ResponseEntity<PlaylistResponse>(playlistResponse, HttpStatus.OK);
 
+    }
+
+    public String retrieveGenreByTemperature(double doubleTemp) {
+        String recommendation = null;
+        int temp = (int) doubleTemp;
+        if (temp > Constants.MAX_TEMPERATURE) {
+            recommendation = Constants.MUSIC_GENRE_PARTY;
+        } else if (temp < Constants.MIN_TEMPERATURE) {
+            recommendation = Constants.MUSIC_GENRE_CLASSICAL;
+        } else if (temp >= Constants.FIFTEEN_CELSIUS_TEMPERATURE && temp <= Constants.MAX_TEMPERATURE) {
+            recommendation = Constants.MUSIC_GENRE_POP;
+        } else if (temp >= Constants.MIN_TEMPERATURE && temp < Constants.FIFTEEN_CELSIUS_TEMPERATURE) {
+            recommendation = Constants.MUSIC_GENRE_ROCK;
+        }
+        return recommendation;
     }
 }
