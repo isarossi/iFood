@@ -46,8 +46,8 @@ public class WeatherService {
 
     public double retrieveWeatherResponse(String lat, String lon) throws IOException {
         double temp;
-        //Double.parseDouble(string)
-        if (lat != null && lon != null) {
+        String weatherKey = Weather.retrieveCoordinateKey(lat,lon);
+        if (lat != null && lon != null && weatherCache.get(weatherKey) != null ) {
             Weather weather = (Weather) weatherCache.get(Weather.retrieveCoordinateKey(lat, lon));
             temp = weather.getTemp();
         } else {
@@ -78,6 +78,4 @@ public class WeatherService {
         }
         return weatherForecastService;
     }
-
-
 }
