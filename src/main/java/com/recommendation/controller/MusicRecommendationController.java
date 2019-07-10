@@ -8,10 +8,13 @@ import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.MusicRecommendationService;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
+import com.recommendation.service.musicplaylist.model.PlaylistResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/recommendation")
@@ -28,16 +31,16 @@ public class MusicRecommendationController {
     private CachePlaylistManagerImpl playlistCache;
 
     @RequestMapping(value = "/city")
-    public ResponseEntity<PlaylistJsonResponse> recommendationByCity(String city) {
+    public ResponseEntity<PlaylistResponse> recommendationByCity(String city) {
         MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache,playlistCache);
-        ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(city);
+        ResponseEntity<PlaylistResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(city);
         return recommendedPlaylist;
     }
 
     @RequestMapping(value = {"/lat", "/lon"})
-    public ResponseEntity<PlaylistJsonResponse> recommendationByCoordinates(String lat, String lon) {
+    public ResponseEntity<PlaylistResponse> recommendationByCoordinates(String lat, String lon) {
         MusicRecommendationService musicRecommendationService = new MusicRecommendationService(authorizationProperties, musicRecommendationProp, weatherProp, weatherCache, playlistCache);
-        ResponseEntity<PlaylistJsonResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(lat, lon);
+        ResponseEntity<PlaylistResponse> recommendedPlaylist = musicRecommendationService.getRecommendedPlaylist(lat, lon);
         return recommendedPlaylist;
     }
 

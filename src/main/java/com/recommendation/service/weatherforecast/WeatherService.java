@@ -38,7 +38,7 @@ public class WeatherService {
         } else {
             OpenWeatherServiceInterface openWeatherService = Init();
             Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCity(weatherProps.getAppid(), weatherProps.getUnits(), city);
-            Response<WeatherForecastJsonResponse> weatherForecastService = executeService(call);
+            Response<WeatherForecastJsonResponse> weatherForecastService = retrieveWeatherForecast(call);
             temp = weatherForecastService.body().getMain().getTemp();
         }
         return temp;
@@ -53,13 +53,13 @@ public class WeatherService {
         } else {
             OpenWeatherServiceInterface openWeatherService = Init();
             Call<WeatherForecastJsonResponse> call = openWeatherService.getWeatherForecastByCoordinates(weatherProps.getAppid(), weatherProps.getUnits(), lat, lon);
-            Response<WeatherForecastJsonResponse> weatherForecastService = executeService(call);
+            Response<WeatherForecastJsonResponse> weatherForecastService = retrieveWeatherForecast(call);
             temp = weatherForecastService.body().getMain().getTemp();
         }
         return temp;
     }
 
-    private Response<WeatherForecastJsonResponse> executeService(Call<WeatherForecastJsonResponse> call) throws IOException {
+    private Response<WeatherForecastJsonResponse> retrieveWeatherForecast(Call<WeatherForecastJsonResponse> call) throws IOException {
         Response<WeatherForecastJsonResponse> weatherForecastService = executeWeatherForecastService(call);
         Weather weather = new Weather(weatherForecastService.body());
         weatherCache.save(weather);

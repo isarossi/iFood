@@ -9,6 +9,7 @@ import com.recommendation.properties.MusicRecommendationProperties;
 import com.recommendation.properties.WeatherProperties;
 import com.recommendation.service.musicplaylist.MusicService;
 import com.recommendation.service.musicplaylist.model.PlaylistJsonResponse;
+import com.recommendation.service.musicplaylist.model.PlaylistResponse;
 import com.recommendation.service.weatherforecast.WeatherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 public class MusicRecommendationService {
@@ -34,38 +36,38 @@ public class MusicRecommendationService {
         this.playlistCache = playlistCache;
     }
 
-    public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String city) {
+    public ResponseEntity<PlaylistResponse> getRecommendedPlaylist(String city) {
         WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
+        PlaylistResponse playlistResponse = null;
         double temp;
-        PlaylistJsonResponse playlistJsonResponse = null;
         try {
             temp = weatherService.retrieveWeatherResponse(city);
             String genre = musicService.retrieveGenreByTemperature(temp);
-            playlistJsonResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
+            playlistResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
         } catch (RestException ex) {
             throw ex;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<PlaylistJsonResponse>(playlistJsonResponse, HttpStatus.OK);
+        return new ResponseEntity<PlaylistResponse>(playlistResponse, HttpStatus.OK);
     }
 
-    public ResponseEntity<PlaylistJsonResponse> getRecommendedPlaylist(String lat, String lon) {
+    public ResponseEntity<PlaylistResponse> getRecommendedPlaylist(String lat, String lon) {
         WeatherService weatherService = new WeatherService(weatherProp, weatherCache);
         MusicService musicService = new MusicService(authorizationProp, musicRecommendationProp);
         double temp;
-        PlaylistJsonResponse playlistJsonResponse = null;
+        PlaylistResponse playlistResponse = null;
         try {
             temp = weatherService.retrieveWeatherResponse(lat, lon);
             String genre = musicService.retrieveGenreByTemperature(temp);
-            playlistJsonResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
+            playlistResponse = musicService.retrievePlaylistRecommendation(playlistCache, genre);
         } catch (RestException ex) {
             throw ex;
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<PlaylistJsonResponse>(playlistJsonResponse, HttpStatus.OK);
+        return new ResponseEntity<PlaylistResponse>(playlistResponse, HttpStatus.OK);
 
     }
 }
